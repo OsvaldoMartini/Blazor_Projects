@@ -1,0 +1,20 @@
+﻿@addTagHelper *, Blazor.FlexGrid
+@using Blazor.FlexGrid.Demo.Shared
+@using Blazor.FlexGrid.DataAdapters
+@using Blazor.FlexGrid.Demo.Serverside.App.Services
+@inject WeatherForecastService WeatherService
+@page "/grid"
+
+<h1>Weather forecast</h1>
+
+<GridView DataAdapter="@dataAdapter" PageSize="5"></GridView>
+
+@functions{
+    CollectionTableDataAdapter<WeatherForecast> dataAdapter;
+
+    protected override async Task OnInitAsync()
+    {
+        var forecast = await WeatherService.GetForecastAsync(DateTime.Now);
+        dataAdapter = new CollectionTableDataAdapter<WeatherForecast>(forecast);
+    }
+}

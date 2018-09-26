@@ -1,0 +1,23 @@
+﻿@addTagHelper *, Blazor.FlexGrid
+@using Blazor.FlexGrid.Demo.Shared
+@using Blazor.FlexGrid.DataAdapters
+@using Blazor.FlexGrid.DataSet
+@using Blazor.FlexGrid.DataSet.Options
+@using Blazor.FlexGrid.Components.Configuration
+@using Blazor.FlexGrid.Components
+@page "/lazyloadedgrid"
+@inject HttpClient Http
+@inject LazyLoadedTableDataAdapter<WeatherForecast> forecastAdapter
+
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+
+<GridView DataAdapter="@forecastAdapter" LazyLoadingOptions="@(new LazyLoadingOptions() { DataUri = "/api/SampleData/WeatherForecasts" })" PageSize="10"></GridView>
+
+
+
+
+
