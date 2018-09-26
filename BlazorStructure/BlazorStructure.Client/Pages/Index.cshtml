@@ -1,7 +1,21 @@
 ﻿@page "/"
+@using  BlazorLibTest
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<Component1>
+    <SurveyPrompt Title="How is Blazor working for you?" />
+</Component1>
+
+<button onclick="@Prompt">Prompt</button>
+<p>@message</p>
+
+@functions {
+string message;
+async Task Prompt()
+    {
+        message=await ExampleJsInterop.Prompt("Hello from .Net");
+    }
+}

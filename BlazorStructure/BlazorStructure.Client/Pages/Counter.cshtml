@@ -1,4 +1,6 @@
 ﻿@page "/counter"
+@using Blazor.Extensions.Storage
+@inject LocalStorage LocalStorage
 
 <h1>Counter</h1>
 
@@ -9,8 +11,14 @@
 @functions {
     int currentCount = 0;
 
+    protected override async Task OnInitAsync()
+    {
+        currentCount = await LocalStorage.GetItem<int>("counter");
+    }
+
     void IncrementCount()
     {
         currentCount++;
+        LocalStorage.SetItem("counter", currentCount);
     }
 }
