@@ -1,0 +1,22 @@
+﻿@inject ApiClient api
+@inject AppState state
+
+<!--
+    Configuring this here is temporary. Later we'll move the app config
+    into Program.cs, and it won't be necessary to specify AppAssembly.
+-->
+<Router AppAssembly=typeof(Program).Assembly />
+
+@functions {
+    protected override async Task OnInitAsync()
+    {
+        var token = RegisteredFunction.Invoke<string>("getStoredToken");
+
+        if (token != null)
+        {
+            api.SetToken(token);
+            var user = await api.GetUserAsync();
+            state.UpdateUser(user);
+        }
+    }
+}

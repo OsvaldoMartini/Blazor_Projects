@@ -1,0 +1,20 @@
+﻿<div>
+    <small class="text-muted">
+        <span class="oi oi-heart meta-icon"></span> @Points points  
+        <span class="oi oi-person meta-icon pl-3"></span> <a href="/user/@User">@User</a>
+        <span class="oi oi-clock meta-icon pl-3"></span> <a class="pr-3" href="/item/@Id">@TimeAgo</a>
+        <a href="/item/@Id" class="badge badge-pill badge-info">@CommentsCount comments</a>
+    </small>
+</div>
+@functions{
+    [Parameter]
+    int Points { get; set; }
+    [Parameter]
+    string User { get; set; }
+    [Parameter]
+    int Id { get; set; }
+    [Parameter]
+    string TimeAgo { get; set; }
+    [Parameter]
+    int CommentsCount { get; set; }
+}

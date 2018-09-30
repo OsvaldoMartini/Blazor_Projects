@@ -1,0 +1,27 @@
+
+<div class="task row @(Data.IsDone ? "task-completed" : null)"> 
+	<div class="col-md-2 category-container" style="text-align:right;">
+		<span class="badge badge-info" style="background-color:@Data.Category.Color;">@Data.Category.Name</span>
+	</div>
+	<div class="col-md-8 name-container" >
+		<a href="/tasks/detail/@Data.Id">@Data.Name</a>
+	</div>
+	<div class="col-md-2 options-container" style="text-align:right;">
+		<input type="checkbox" bind="@Data.IsDone" onclick="@(async () => await ToogleIsDone(Data.Id))" />
+		<button type="button" class="btn btn-link p-0" title="delete task" onclick="@(async () => await OnTaskDelete(Data.Id))">
+			<span class="oi oi-trash"></span>
+		</button>
+	</div>
+</div>
+
+@functions
+{
+    [Parameter]
+	TodoTask Data { get; set; }
+
+	[Parameter] 
+	Func<string, Task> ToogleIsDone { get; set; }
+	
+	[Parameter] 
+	Func<string, Task> OnTaskDelete { get; set; }
+}

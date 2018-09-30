@@ -1,0 +1,57 @@
+@page "/tasks/detail/{TaskId}"
+@inherits DetailModel
+
+<div class="row">
+    <div class="col-md-12">
+        <h1><a href="tasks"><button type="button" class="btn btn-light" style="margin-top: -7px;"><span class="oi oi-chevron-left"></span></button></a> Details</h1>
+    </div>
+</div>
+
+@if (Error != null)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <ErrorAlert Error=@Error />
+        </div>
+    </div>
+}
+
+@if (TodoTask != null)
+{   
+    <div class="card" style="border-color: white;">
+        <div class="card-body">
+            <h1>
+                <div class="category-container" style="display:inline-block; top: -9px; position: relative;">
+                    <span class="badge badge-info" style="background-color:@TodoTask.Category.Color;">@TodoTask.Category.Name</span>
+                </div>
+                @TodoTask.Name
+            </h1>
+            <p class="card-text">
+                @if (IsDescriptionEditorOpened)
+                {
+                    <div class="form-group">
+                        <textarea class="form-control mb-2" bind=@TodoTask.Description rows="5"></textarea>
+                        <button type="button" class="btn btn-primary" onclick="@(async () => await SaveDescription())">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick=@CancelDescriptionEditor>Cancel</button>
+                    </div>
+                }
+                else
+                {
+                    @if (TodoTask.Description == null)
+                    {
+                        <button type="button" class="btn btn-light" onclick=@OpenDescriptionEditor>
+                            <span>Click to edit description</span>
+                        </button>
+                    }
+                    else
+                    {
+                        <p class="task-description">@TodoTask.Description</p>
+                        <button type="button" class="btn btn-light" onclick=@OpenDescriptionEditor>
+                            <span class="oi oi-pencil"></span>
+                        </button>
+                    }
+                }
+            </p>
+        </div>
+    </div>
+}

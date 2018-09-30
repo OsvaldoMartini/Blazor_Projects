@@ -1,0 +1,47 @@
+﻿@inject IHttpApiClientRequestBuilderFactory ClientFactory;
+@inject IUriHelper UriHelper
+<h4>Use a Toss account to log in.</h4>
+<form method="post" >
+
+    <div class="form-group">
+        <label for="UserName">UserName</label>
+        <input bind="@loginCommand.UserName" id="UserName" class="form-control" />
+        <ValidationError Errors="@_errors" FieldName="UserName" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Password">Password</label>
+        <input bind="@loginCommand.Password" id="Password" type="password"  class="form-control" />
+        <ValidationError Errors="@_errors" FieldName="Password" />
+    </div>
+    <div class="form-group">
+        <div class="checkbox">
+            <label for="RememberMe">
+                <input id="RememberMe" bind="@loginCommand.RememberMe" type="checkbox" />
+                <label for="RememberMe">Remember me</label>
+            </label>
+        </div>
+    </div>
+    <div class="form-group">
+        <button ref="loginButton" id="BtnLogin" type="button" onclick="@TryLogin" class="btn btn-default">Log in</button>
+        <a href="/account/forgotPassword">Forgot your password?</a>
+    </div>
+</form>
+
+
+@functions{
+    ElementRef loginButton;
+    LoginCommand loginCommand = new LoginCommand();
+    Dictionary<string,List<string>> _errors;
+    async Task<bool> TryLogin(UIEventArgs even)
+    {
+        var test = Json.Deserialize<Dictionary<string,List<string>>>("{\"Name\":[\"The Name field is required.\"],\"Email\":[\"The Email field is required.\"],\"Password\":[\"The Password field is required.\"]}");
+
+        _errors = null;
+        await ClientFactory.Create("/api/account/login", loginButton)
+            .OnBadRequest<Dictionary<string,List<string>>>(errors => _errors = errors)
+            .OnOK(null,"/")
+            .Post(loginCommand);
+        StateHasChanged();
+        return false;
+    }
+}

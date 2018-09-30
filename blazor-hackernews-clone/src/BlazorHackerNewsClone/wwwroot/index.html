@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>BlazorHackerNewsClone</title>
+    <base href="/" />
+    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/site.css" rel="stylesheet" />
+</head>
+<body>
+    <app>
+        <div style="height:100vh;" class="pt-3">
+            <div class="splash">
+                <div>
+                    <h2>
+                        <span style="border: 1px solid #000;padding:5px">B</span>
+                        Hacker News
+                    </h2>
+                    <div class="mx-auto pt-3" style="width:500px">
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated w-100" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </app>
+
+    <script type="blazor-boot">
+    </script>
+    <script>
+        Blazor.registerFunction('RawHtml', function (element, value) {
+            console.log("element", element);
+            element.innerHTML = value;
+            for (var i = element.childNodes.length - 1; i >= 0; i--) {
+                var childNode = element.childNodes[i];
+                element.parentNode.insertBefore(childNode, element);
+            }
+            element.parentNode.removeChild(element);
+            return true;
+        });
+    </script>
+</body>
+</html>

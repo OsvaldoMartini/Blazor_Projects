@@ -1,0 +1,38 @@
+@inject AppState state
+@inject IAuthService authService
+
+@if (Visible)
+{
+    if (state.LoginStatus == LoginStatus.LoggedIn)
+    {
+        <p class="control">
+            <button class="button" onclick="@LogoutUser">Logout</button>
+        </p>
+    }
+    else if (state.LoginStatus == LoginStatus.LoggedOut)
+    {
+        <p class="control">
+            <button class="button is-info" onclick="@LoginUser">Login</button>
+        </p>
+    }
+}
+
+@functions {
+
+    [Parameter]
+    bool Visible { get; set; } = true;
+
+    void LoginUser() {
+        authService.Login();
+    }
+
+    void LogoutUser() {
+        authService.Logout();
+    }
+
+    protected override void OnInit() {
+        var isLoggedIn = authService.IsLoggedIn();
+        var status = isLoggedIn ? LoginStatus.LoggedIn : LoginStatus.LoggedOut;
+        state.SetLoginStatus(isLoggedIn ? LoginStatus.LoggedIn : LoginStatus.LoggedOut);
+    }
+}

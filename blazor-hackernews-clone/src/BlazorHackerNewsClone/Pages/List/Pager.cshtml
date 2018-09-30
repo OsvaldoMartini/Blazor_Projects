@@ -1,0 +1,13 @@
+﻿<button type="button" class="btn btn-link btn-xs" onclick="@OnPreviousClick" disabled="@(CurrentPage < 2)">&larr; Prev</button>
+<button type="button" class="btn btn-link btn-xs" onclick="@OnNextClick" disabled="@(ItemCount < 30)">More &rarr;</button>
+
+@functions{
+    [Parameter]
+    Action OnPreviousClick { get; set; }
+    [Parameter]
+    Action OnNextClick { get; set; }
+    [Parameter]
+    int CurrentPage { get; set; }
+    [Parameter]
+    int ItemCount { get; set; }
+}

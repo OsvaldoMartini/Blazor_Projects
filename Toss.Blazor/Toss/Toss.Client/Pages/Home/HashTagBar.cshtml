@@ -1,0 +1,86 @@
+﻿@inject IHttpApiClientRequestBuilderFactory ClientFactory;
+@inject IAccountService AccountService
+@inject IUriHelper urlHelper;
+
+<div class="form-inline">
+
+    <div class="form-group" id="BlockHashTagBar">
+        
+       
+        @foreach (var hashTag in _account.Hashtags ?? new List<string>())
+        {
+            <div class="input-group m-1 btn-group"  role="group">
+                <NavLink href="@GetUrl(hashTag)" Match="NavLinkMatch.All" class="btn btn-secondary">
+                    #@hashTag
+                </NavLink>
+                @if(hashTag == CurrentTag)
+                {
+                    <button type="button" class="btn btn-warning" onclick="@RemoveHashTag"><i class="fas fa-trash"></i></button>
+                }
+            </div>
+        }
+        <div class="input-group m-1">
+            <input type="text" class="form-control" id="TxtAddHashTag" bind="@newHashtag" placeholder="Add hashtag" aria-label="Add hashtag" aria-describedby="basic-addon2" />
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" id="BtnAddHashTag" onclick="@(async () => await AddHashtag())" type="button">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions{
+    AccountViewModel _account = new AccountViewModel();
+    string newHashtag;
+
+    [Parameter]
+    private string CurrentTag { get; set; } = "";
+
+    protected string GetUrl(string hashtag)
+    {
+        if (string.IsNullOrEmpty(hashtag))
+            return "/";
+        return "/tag/" + hashtag;
+
+    }
+    protected override async Task OnInitAsync()
+    {
+        _account = await AccountService.CurrentAccount();
+
+        if (_account != null && string.IsNullOrEmpty(CurrentTag) && _account.Hashtags.Any())
+            urlHelper.NavigateTo(GetUrl(_account.Hashtags.First()));
+        StateHasChanged();
+    }
+    protected async Task AddHashtag()
+    {
+
+        await ClientFactory.Create("/api/account/addHashTag")
+            .OnOK(async () =>
+            {
+
+                await JsInterop.Toastr("success", "Hashtag added with success");
+                _account.Hashtags.Add(newHashtag);
+                urlHelper.NavigateTo(GetUrl(newHashtag));
+                newHashtag = null;
+            })
+            .OnBadRequest<Dictionary<string, List<string>>>(async e => await JsInterop.Toastr("error", string.Join(",", e["NewHashTag"])))
+            .Post(new AddHashtagCommand(newHashtag));
+        StateHasChanged();
+
+    }
+
+    protected async Task RemoveHashTag()
+    {
+        await ClientFactory.Create("/api/account/removeHashTag")
+              .OnOK(async () =>
+              {
+                  await JsInterop.Toastr("success", "Hashtag removed with success");
+                  _account.Hashtags.Remove(CurrentTag);
+                  urlHelper.NavigateTo(GetUrl(_account.Hashtags.FirstOrDefault()));
+              })
+              .Post(new RemoveHashTagCommand(CurrentTag));
+
+    }
+}
+

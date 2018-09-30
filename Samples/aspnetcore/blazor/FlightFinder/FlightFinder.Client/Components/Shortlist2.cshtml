@@ -1,0 +1,15 @@
+﻿<h2>Heeelo Shortlist (@Itineraries.Count)</h2>
+
+<ul class="list-group">
+    @foreach (var item in Itineraries)
+    {
+        <li class="list-group-item">@item.Outbound.Airline</li>
+    }
+</ul>
+
+@functions
+{
+[Parameter] IReadOnlyList<Itinerary> Itineraries { get; set; }
+
+[Parameter] Action<Itinerary> OnRemoveItinerary { get; set; }
+}

@@ -7,11 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Cloudcrate.AspNetCore.Blazor.Browser.Storage" Version="0.5.1" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Browser" Version="0.5.1" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="0.5.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BlazorLibrary\BlazorLibrary.csproj" />
     <ProjectReference Include="..\FlightFinder.Shared\FlightFinder.Shared.csproj" />
   </ItemGroup>
 

@@ -1,4 +1,7 @@
 ﻿<div class="px-4">
+    
+    <Component1/>
+
     @if (Itineraries != null)
     {
         <div class="title">
@@ -10,22 +13,22 @@
         </div>
 
         @foreach (var item in sortedItineraries)
-        {
-            <div class="mb-4 d-flex align-items-center">
-                <ul class="list-group">
-                    <li class="list-group-item d-flex align-items-center">
-                        <SearchResultFlightSegment Symbol="▶" Flight=item.Outbound />
-                    </li>
-                    <li class="list-group-item d-flex align-items-center">
-                        <SearchResultFlightSegment Symbol="◀" Flight=item.Return />
-                    </li>
-                </ul>
-                <div class="price ml-3">
-                    <h3>@item.Price.ToString("$0")</h3>
-                    <button class="btn" onclick=@(() => OnAddItinerary(item))>Add</button>
-                </div>
-            </div>
-        }
+         {
+             <div class="mb-4 d-flex align-items-center">
+                 <ul class="list-group">
+                     <li class="list-group-item d-flex align-items-center">
+                         <SearchResultFlightSegment Symbol="▶" Flight=item.Outbound/>
+                     </li>
+                     <li class="list-group-item d-flex align-items-center">
+                         <SearchResultFlightSegment Symbol="◀" Flight=item.Return/>
+                     </li>
+                 </ul>
+                 <div class="price ml-3">
+                     <h3>@item.Price.ToString("$0")</h3>
+                     <button class="btn" onclick=@(() => OnAddItinerary(item))>Add</button>
+                 </div>
+             </div>
+         }
     }
 </div>
 

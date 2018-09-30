@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using BlazorLibrary;
+using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
 
 namespace FlightFinder.Client.Services
 {
@@ -22,9 +24,18 @@ namespace FlightFinder.Client.Services
 
         // Receive 'http' instance from DI
         private readonly HttpClient http;
-        public AppState(HttpClient httpInstance)
+        private readonly LocalStorage localStorage;
+
+        public AppState(HttpClient httpInstance, LocalStorage localStorageInstance)
         {
             http = httpInstance;
+            localStorage = localStorageInstance;
+
+            var savedItems = localStorage.GetItem<Itinerary[]>("shortList");
+            if (savedItems != null)
+            {
+                shortlist.AddRange(savedItems);
+            }
         }
 
         public async Task Search(SearchCriteria criteria)
@@ -35,12 +46,16 @@ namespace FlightFinder.Client.Services
             SearchResults = await http.PostJsonAsync<Itinerary[]>("/api/flightsearch", criteria);
             SearchInProgress = false;
             NotifyStateChanged();
+
+            ExampleJsInterop.Prompt("I am Calling My Javascript File");
         }
 
         public void AddToShortlist(Itinerary itinerary)
         {
             shortlist.Add(itinerary);
             NotifyStateChanged();
+            localStorage.SetItem("shortList", shortlist);
+            Console.WriteLine("Implement TODO SHORLIST");
         }
 
         public void RemoveFromShortlist(Itinerary itinerary)

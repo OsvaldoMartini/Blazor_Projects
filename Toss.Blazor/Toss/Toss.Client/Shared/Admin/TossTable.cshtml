@@ -1,0 +1,80 @@
+﻿@inject IHttpApiClientRequestBuilderFactory ClientFactory;
+<h5>Tosses <small class="text-muted">@TossCount tosses in the DB</small></h5>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Created On</th>
+            <th>User</th>
+            <th>Content</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var toss in Tosses)
+        {
+            <tr>
+                <td>@toss.Id</td>
+                <td>@toss.CreatedOn</td>
+                <td>@toss.UserName</td>
+                <td>@toss.Content</td>
+                <td><button type="button" class="btn btn-danger" onclick="@(async () => await Delete(toss))"><i class="fas fa-trash"></i></button></td>
+            </tr>
+
+        }
+        @if (maxDate.HasValue)
+        {
+            <tr>
+                <td colspan="5"><button type="button" class="btn btn-block" onclick="@LoadMore">Load More</button></td>
+            </tr>
+        }
+        else
+        {
+            <tr>
+                <td colspan="5"><div class="alert alert-warning">All the toss were loaded</div></td>
+            </tr>
+
+        }
+    </tbody>
+</table>
+@functions {
+    int TossCount = 0;
+    List<TossListAdminItem> Tosses = new List<TossListAdminItem>();
+    DateTimeOffset? maxDate;
+    protected override async Task OnInitAsync()
+    {
+        await ClientFactory.Create("/api/toss/list?ItemCount=15")
+            .OnOK<TossListAdminItems>(r =>
+            {
+                Tosses = r.Result;
+                TossCount = r.Count;
+                if (r.Result.Count > 0)
+                    maxDate = r.Result.Min(t => t.CreatedOn);
+            })
+            .Get();
+    }
+    protected async Task Delete(TossListAdminItem toss)
+    {
+        await ClientFactory.Create("/api/toss/delete")
+                   .OnOK<TossListAdminItems>(async r =>
+                   {
+                       await JsInterop.Toastr("success", "Toss deleted with success");
+                       Tosses.Remove(toss);
+                   })
+                   .Post(new DeleteTossCommand(toss.Id));
+    }
+    protected async Task LoadMore()
+    {
+        await ClientFactory.Create(string.Format("/api/toss/list?ItemCount=15&maxDate={0:yyyy-MM-ddTHH:mm:ss.fffZ}", maxDate))
+                   .OnOK<TossListAdminItems>(r =>
+                   {
+                       Tosses.AddRange(r.Result);
+                       if (r.Result.Count > 0)
+                           maxDate = r.Result.Min(t => t.CreatedOn);
+                       else
+                           maxDate = null;
+                   })
+                   .Get();
+
+    }
+}
