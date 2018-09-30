@@ -11,6 +11,9 @@
 @functions {
     int currentCount = 0;
 
+    [Parameter]
+    int IncrementAmount { get; set; } = 1;
+
     protected override async Task OnInitAsync()
     {
         currentCount = await LocalStorage.GetItem<int>("counter");
@@ -18,7 +21,8 @@
 
     void IncrementCount()
     {
-        currentCount++;
+        currentCount += IncrementAmount;
+
         LocalStorage.SetItem("counter", currentCount);
     }
 }

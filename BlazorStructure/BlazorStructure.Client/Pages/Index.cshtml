@@ -9,13 +9,15 @@ Welcome to your new app.
     <SurveyPrompt Title="How is Blazor working for you?" />
 </Component1>
 
+<Counter IncrementAmount="8" />
+
 <button onclick="@Prompt">Prompt</button>
 <p>@message</p>
 
 @functions {
 string message;
 async Task Prompt()
-    {
-        message=await ExampleJsInterop.Prompt("Hello from .Net");
-    }
+{
+    message = await ExampleJsInterop.Prompt("Hello from .Net");
+}
 }
